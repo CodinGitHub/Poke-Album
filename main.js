@@ -1,7 +1,19 @@
-// 1. Consultar un N número de pokemons.       ✔
-let totalOfPokemons = 150;
+// Consultar un N número de pokemons
+let totalOfPokemons = 5;
 let allPokemones = []
 
+// Hacer la consulta al API de pokemon
+async function getApiResponse(id){
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`);
+    const data = await response.json();
+    objCreator(data, id);
+}
+// Armar un objeto con los datos del API
+for(let i=1; i<=totalOfPokemons; i++){
+    let pokemon = getApiResponse(i);
+    allPokemones.push(pokemon);
+    // console.log(allPokemones)
+}
 class CardPokemon{
     constructor(id, name, img, hp, attack, defense, speed ){
         this._id = id;
@@ -13,16 +25,16 @@ class CardPokemon{
         this._speed = speed;
     }
     get id(){
-        return this.id;
+        return this._id;
     }
     get name(){
         return this._name;
     }
     get img(){
-        return this.img;
+        return this._img;
     }
     get hp(){
-        return this.hp;
+        return this._hp;
     }
     get attack(){
         return this._attack;
@@ -35,35 +47,22 @@ class CardPokemon{
     }
     
 }
+function objCreator(data, id){
 
-
-async function init(id){
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-    const data = await response.json()
-    return data
-    
-}
-
-async function searchByID(id){
-    const pokemon = await init(id)
-    let pokeName = pokemon.name;
-    let pokeImg = pokemon.sprites.other['official-artwork'].front_default;
-    let hp = pokemon.stats[0].base_stat;
-    let attack = pokemon.stats[1].base_stat;
-    let defense = pokemon.stats[2].base_stat;
-    let speed = pokemon.stats[5].base_stat;
+    let pokeName = data.name;
+    let pokeImg = data.sprites.other['official-artwork'].front_default;
+    let hp = data.stats[0].base_stat;
+    let attack = data.stats[1].base_stat;
+    let defense = data.stats[2].base_stat;
+    let speed = data.stats[5].base_stat;
 
     let pokemonfromClass = new CardPokemon(id, pokeName, pokeImg, hp, attack, defense, speed );
-    
-    // printPokemons(allPokemones)
+    allPokemones.push(pokemonfromClass)
+
     cardCreator(id, pokeName, pokeImg, hp, attack, defense, speed);
-    return pokemonfromClass;
+    console.log(allPokemones)
+    return allPokemones;
 }
-
-function printPokemons(object){
-    console.log(object)
-}
-
 
 //Objeto con 150 pokemones
 
@@ -89,12 +88,12 @@ function newPage(page){
     }
     
     for(let i = start; i<end; i++){
-        let pokemonfromClass = searchByID(i);
-        console.log(pokemonfromClass.then())
-        allPokemones.push(pokemonfromClass);
+        let pokemonfromClass = getApiResponse(i);
+        // console.log(pokemonfromClass.then())
+        // allPokemones.push(pokemonfromClass);
         // createFromObject();
     }
-    console.log(allPokemones)
+    // console.log(allPokemones)
 }
 let objeto = {
     _id: 'uno',
