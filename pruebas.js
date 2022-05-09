@@ -61,25 +61,9 @@ async function app(){
             
             <div class="circle"></div>
             <img src="${pokeImg}" alt="">
-            <div class="stats-container">
-                <section class="section1">
-                    <img src="./images/stats/hp.png" class="stat-logo">
-                    <img src="./images/stats/attack.png" class="stat-logo">
-                    <img src="./images/stats/defense.png" class="stat-logo">
-                    <img src="./images/stats/speed.png" class="stat-logo">
-                </section>
-                <section class="section2">
-                    <progress min="0" max="250" value="${hp}"></progress>
-                    <progress min="0" max="134" value="${attack}"></progress>
-                    <progress min="0" max="130" value="${defense}"></progress>
-                    <progress min="0" max="150" value="${speed}"></progress>
-                </section>
-                <section class="section3">
-                    <p class="stat">${hp}</p>
-                    <p class="stat">${attack}</p>
-                    <p class="stat">${defense}</p>
-                    <p class="stat">${speed}</p>
-                </section>
+            <div class="types-container">
+                <p>Fuego</p>
+                <p>Grass</p>
             </div>
             
         </div>
