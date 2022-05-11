@@ -20,7 +20,6 @@ async function app(){
        
             // Hacer la consulta al API de pokemon
             let pokemon = await pokemonRequest(i);
-            console.log('esto no hace')
             //Armar el arreglo de objetos con los datos
             let id = pokemon.id;
             let name = pokemon.name; 
@@ -46,16 +45,41 @@ async function app(){
     }else{
         // pokemonSelected = JSON.parse(localStorage.getItem('pokemonSelected'))
         allPokemons = JSON.parse(localStorage.getItem('allPokemons'));
-        console.log(allPokemons)
-        console.log('cargo desde local');
-       
-        
+    }
+    
+
+    // Calcular los maximos
+
+    var hpValues = [];
+    allPokemons.forEach(element => {
+        hpValues.push(element.hp);
+    });
+
+    var attackValues = [];
+    allPokemons.forEach(element => {
+        attackValues.push(element.attack);
+    });
+
+    var defenseValues = [];
+    allPokemons.forEach(element => {
+        defenseValues.push(element.defense);
+    });
+
+    var speedValues = [];
+    allPokemons.forEach(element => {
+        speedValues.push(element.speed);
+    });
+
+    function maxFromArray(newArray){
+        var maxNumber = Math.max(...newArray);
+        return maxNumber;
     }
 
-    
-    
-    // console.log(allPokemons);
-    
+    let maxHp = maxFromArray(hpValues);
+    let maxAttack = maxFromArray(attackValues);
+    let maxDefense = maxFromArray(defenseValues);
+    let maxSpeed = maxFromArray(speedValues);
+
     //Dibujar las tarjetas de la primera pagina
     let page = 1;
     let ppp = 10;
@@ -72,13 +96,14 @@ async function app(){
         }
         
         for(let i = start-1; i<end-1; i++){
-            console.log(allPokemons[i])
             createFromArray(i);
         }
         
     }
     updatePages(page);
     updateActive();
+
+    
 
     function createFromArray(id){
         cardCreator(
@@ -93,6 +118,15 @@ async function app(){
     }
 
     function cardCreator(id, pokeName, pokeImg, hp, attack, defense, speed, status){
+
+        
+
+
+
+
+
+
+
         cards.innerHTML += `
         <div class="${status} card-container" id="${id}">
             <p class="click-area"></p>
@@ -109,10 +143,10 @@ async function app(){
                     <img src="./images/stats/speed.png" class="stat-logo">
                 </section>
                 <section class="section2">
-                    <progress min="0" max="250" value="${hp}"></progress>
-                    <progress min="0" max="134" value="${attack}"></progress>
-                    <progress min="0" max="130" value="${defense}"></progress>
-                    <progress min="0" max="150" value="${speed}"></progress>
+                    <progress min="0" max="${maxHp}" value="${hp}"></progress>
+                    <progress min="0" max="${maxAttack}" value="${attack}"></progress>
+                    <progress min="0" max="${maxDefense}" value="${defense}"></progress>
+                    <progress min="0" max="${maxSpeed}" value="${speed}"></progress>
                 </section>
                 <section class="section3">
                     <p class="stat">${hp}</p>
@@ -126,14 +160,9 @@ async function app(){
         `;
     }
 
-    //  for(let i=1; i<=totalOfPokemons; i++){
-    //         updateCurrentState(i);
-    //     }
     //Escuchando seleccion de cartas
     let cardSelected = cards.addEventListener('click', (event)=>{
         let idCardSelected = event.srcElement.parentNode.id;   
-        console.log(idCardSelected);
-        // console.log(allPokemons[1]);
 
         updateCurrentState(idCardSelected);
         
@@ -210,3 +239,4 @@ async function app(){
         localStorage.setItem('allPokemons', JSON.stringify(data))
     }
 }
+

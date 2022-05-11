@@ -169,6 +169,17 @@ button:hover{
     place-items: center;
 }
 
-.progress-bar {
+progress{
 	-webkit-appearance: none;
+}
+progress[value] {
+    height: 15px;
+}
+progress::-webkit-progress-bar{
+    background-color: var(--pokemonBackground);
+    border-radius: 8px;
+}
+progress::-webkit-progress-value{
+    background-color: var(--numberBackground);
+    border-radius: 8px;
 }
