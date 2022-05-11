@@ -9,10 +9,14 @@ async function getApiResponse(id){
     objCreator(data, id);
 }
 // Armar un objeto con los datos del API
+
+loading = getElementById('loading');
+
 for(let i=1; i<=totalOfPokemons; i++){
     let pokemon = getApiResponse(i);
     allPokemones.push(pokemon);
-    // console.log(allPokemones)
+    console.log(allPokemones.length);
+    loading.innerHTML = 'Cargando'+ allPokemones.length;
 }
 class CardPokemon{
     constructor(id, name, img, hp, attack, defense, speed ){

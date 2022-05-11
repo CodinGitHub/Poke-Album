@@ -5,21 +5,6 @@
     --deselectedCard: #0000006d;
     --numberBackground: #F20544;
     --progressBar: #F20544;
-    --grass:#54b947;
-    --fire:#F58C1F;
-    --water: #1AAFE1;
-    --bug:#54B947;
-    --normal:#f5b915;
-    --poison:#b92025;
-    --electric:#f5b915;
-    --ground:#78431b;
-    --fairy:#f6e494;
-    --fighting:#b92025;
-    --psychic:#c03695;
-    --rock:#a7a097;
-    --ghost:#8b7e72;
-    --ice:#63cdf6;
-    --dragon:#54b947;
 }
 *{
     box-sizing: border-box;
@@ -175,4 +160,12 @@ button:hover{
     position: absolute;
     top: 10px;
     left: 10px;
+}
+#loaderContainer{
+    display: flex;
+    place-items: center;
+}
+
+.progress-bar {
+	-webkit-appearance: none;
 }

@@ -1,4 +1,6 @@
-let totalOfPokemons = 150;
+import {CardPokemon} from './objects.js'
+
+let totalOfPokemons = 2;
 let allPokemons = [];
 
 app();
@@ -10,15 +12,40 @@ async function pokemonRequest(id){
 }
 
 async function app(){
-    for(let i=1; i<=totalOfPokemons; i++){
-        allPokemons.push(await pokemonRequest(i));
-    }
-        
     let pokemonSelected = [];
-    for(i=1; i<=totalOfPokemons; i++){
-        pokemonSelected[i] = 'disable';
-    }
 
+    if(localStorage.getItem('allPokemons') == null){
+        for(let i=1; i<=totalOfPokemons; i++){
+       
+            // allPokemons.push(await pokemonRequest(i));
+            let pokemon = await pokemonRequest(i);
+            let id = pokemon.id;
+            let name = pokemon.name; 
+            let img = pokemon.sprites.other['official-artwork'].front_default;
+            let hp = pokemon.stats[0].base_stat;
+            let attack = pokemon.stats[1].base_stat; 
+            let defense = pokemon.stats[2].base_stat; 
+            let speed = pokemon.stats[5].base_stat;
+
+            let newPokemon = new CardPokemon(id, name, img, hp, attack, defense, speed, false);
+
+            allPokemons.push(newPokemon)
+            pokemonSelected[i] = 'disable';
+            
+    
+            loaderContainer.innerHTML = 
+            `   <p>Cargando...</p>
+                <progress min="0" max="${totalOfPokemons}" value="${allPokemons.length}"></progress>`;
+        
+        }
+        
+    }else{
+        pokemonSelected = JSON.parse(localStorage.getItem('pokemonSelected'))
+        allPokemons = JSON.parse(localStorage.getItem('allPokemons'))
+    }
+    
+    console.log(allPokemons);
+    
     //Dibujar 10 elementos
     let page = 1;
     let ppp = 10;
@@ -37,6 +64,7 @@ async function app(){
         for(let i = start-1; i<end-1; i++){
             createFromArray(i);
         }
+        
     }
     updatePages(page);
     updateActive();
@@ -45,11 +73,11 @@ async function app(){
         cardCreator(
             allPokemons[id].id, 
             allPokemons[id].name, 
-            allPokemons[id].sprites.other['official-artwork'].front_default, 
-            allPokemons[id].stats[0].base_stat, 
-            allPokemons[id].stats[1].base_stat, 
-            allPokemons[id].stats[2].base_stat, 
-            allPokemons[id].stats[5].base_stat);
+            allPokemons[id].img, 
+            allPokemons[id].hp, 
+            allPokemons[id].attack, 
+            allPokemons[id].defense, 
+            allPokemons[id].speed);
     }
 
     function cardCreator(id, pokeName, pokeImg, hp, attack, defense, speed){
@@ -61,9 +89,25 @@ async function app(){
             
             <div class="circle"></div>
             <img src="${pokeImg}" alt="">
-            <div class="types-container">
-                <p>Fuego</p>
-                <p>Grass</p>
+            <div class="stats-container">
+                <section class="section1">
+                    <img src="./images/stats/hp.png" class="stat-logo">
+                    <img src="./images/stats/attack.png" class="stat-logo">
+                    <img src="./images/stats/defense.png" class="stat-logo">
+                    <img src="./images/stats/speed.png" class="stat-logo">
+                </section>
+                <section class="section2">
+                    <progress min="0" max="250" value="${hp}"></progress>
+                    <progress min="0" max="134" value="${attack}"></progress>
+                    <progress min="0" max="130" value="${defense}"></progress>
+                    <progress min="0" max="150" value="${speed}"></progress>
+                </section>
+                <section class="section3">
+                    <p class="stat">${hp}</p>
+                    <p class="stat">${attack}</p>
+                    <p class="stat">${defense}</p>
+                    <p class="stat">${speed}</p>
+                </section>
             </div>
             
         </div>
@@ -73,12 +117,18 @@ async function app(){
     //Escuchando seleccion de cartas
     let cardSelected = cards.addEventListener('click', (event)=>{
         let idCardSelected = event.srcElement.parentNode.id;   
+
         //Actualizar Matriz
+        /*
         if(pokemonSelected[idCardSelected] === 'disable'){
             pokemonSelected[idCardSelected] = 'enable';
         }else{
             pokemonSelected[idCardSelected] = 'disable';
         }
+        */
+       console.log(idCardSelected);
+       console.log(allPokemons[idCardSelected - 1].active);
+        // Actualizar estado pokemon
         updateCurrentState(idCardSelected);
     });
 
@@ -119,6 +169,10 @@ async function app(){
     function updateActive(){
         let total = document.getElementById('total');
         let numberOfSelected = pokemonSelected.filter(element=>element == 'enable');
-        total.innerHTML = `${numberOfSelected.length}/${totalOfPokemons}`
+        // total.innerHTML = `${numberOfSelected.length}/${totalOfPokemons}`
+
+        localStorage.setItem('pokemonSelected', JSON.stringify(pokemonSelected))
+        localStorage.setItem('allpokemons', JSON.stringify(allPokemons))
+        
     }
 }
