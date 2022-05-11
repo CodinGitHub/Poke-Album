@@ -35,9 +35,13 @@ async function app(){
             // pokemonSelected[i] = 'disable';
             
             //Pintar el Cargando
-            loaderContainer.innerHTML = 
-            `   <p>Cargando...</p>
+
+            if(allPokemons.length < totalOfPokemons){
+                loaderContainer.innerHTML = 
+                `   <p>Cargando...</p>
                 <progress min="0" max="${totalOfPokemons}" value="${allPokemons.length}"></progress>`;
+            }
+            
         }
         // Guardar arreglo de objetos en local
     saveData(allPokemons);
@@ -45,7 +49,10 @@ async function app(){
     }else{
         // pokemonSelected = JSON.parse(localStorage.getItem('pokemonSelected'))
         allPokemons = JSON.parse(localStorage.getItem('allPokemons'));
+
     }
+
+    loaderContainer.style.display = 'none';
     
 
     // Calcular los maximos
