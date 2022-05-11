@@ -1,6 +1,7 @@
 import {CardPokemon} from './objects.js'
 
-let totalOfPokemons = 2;
+// Configuración inicial
+let totalOfPokemons = 150;
 let allPokemons = [];
 
 app();
@@ -12,13 +13,15 @@ async function pokemonRequest(id){
 }
 
 async function app(){
-    let pokemonSelected = [];
+    
 
     if(localStorage.getItem('allPokemons') == null){
         for(let i=1; i<=totalOfPokemons; i++){
        
-            // allPokemons.push(await pokemonRequest(i));
+            // Hacer la consulta al API de pokemon
             let pokemon = await pokemonRequest(i);
+            console.log('esto no hace')
+            //Armar el arreglo de objetos con los datos
             let id = pokemon.id;
             let name = pokemon.name; 
             let img = pokemon.sprites.other['official-artwork'].front_default;
@@ -27,26 +30,33 @@ async function app(){
             let defense = pokemon.stats[2].base_stat; 
             let speed = pokemon.stats[5].base_stat;
 
-            let newPokemon = new CardPokemon(id, name, img, hp, attack, defense, speed, false);
+            let newPokemon = new CardPokemon(id, name, img, hp, attack, defense, speed, 'inactive');
 
             allPokemons.push(newPokemon)
-            pokemonSelected[i] = 'disable';
+            // pokemonSelected[i] = 'disable';
             
-    
+            //Pintar el Cargando
             loaderContainer.innerHTML = 
             `   <p>Cargando...</p>
                 <progress min="0" max="${totalOfPokemons}" value="${allPokemons.length}"></progress>`;
-        
         }
+        // Guardar arreglo de objetos en local
+    saveData(allPokemons);
         
     }else{
-        pokemonSelected = JSON.parse(localStorage.getItem('pokemonSelected'))
-        allPokemons = JSON.parse(localStorage.getItem('allPokemons'))
+        // pokemonSelected = JSON.parse(localStorage.getItem('pokemonSelected'))
+        allPokemons = JSON.parse(localStorage.getItem('allPokemons'));
+        console.log(allPokemons)
+        console.log('cargo desde local');
+       
+        
     }
+
     
-    console.log(allPokemons);
     
-    //Dibujar 10 elementos
+    // console.log(allPokemons);
+    
+    //Dibujar las tarjetas de la primera pagina
     let page = 1;
     let ppp = 10;
     let maxpage = Math.ceil(totalOfPokemons/ppp);
@@ -62,6 +72,7 @@ async function app(){
         }
         
         for(let i = start-1; i<end-1; i++){
+            console.log(allPokemons[i])
             createFromArray(i);
         }
         
@@ -77,12 +88,13 @@ async function app(){
             allPokemons[id].hp, 
             allPokemons[id].attack, 
             allPokemons[id].defense, 
-            allPokemons[id].speed);
+            allPokemons[id].speed,
+            allPokemons[id].status);
     }
 
-    function cardCreator(id, pokeName, pokeImg, hp, attack, defense, speed){
+    function cardCreator(id, pokeName, pokeImg, hp, attack, defense, speed, status){
         cards.innerHTML += `
-        <div class="${pokemonSelected[id]} card-container" id="${id}">
+        <div class="${status} card-container" id="${id}">
             <p class="click-area"></p>
             <p class="number">${id}</p>
             <h2 class="name">${pokeName}</h2>
@@ -114,34 +126,45 @@ async function app(){
         `;
     }
 
+    //  for(let i=1; i<=totalOfPokemons; i++){
+    //         updateCurrentState(i);
+    //     }
     //Escuchando seleccion de cartas
     let cardSelected = cards.addEventListener('click', (event)=>{
         let idCardSelected = event.srcElement.parentNode.id;   
+        console.log(idCardSelected);
+        // console.log(allPokemons[1]);
 
-        //Actualizar Matriz
-        /*
-        if(pokemonSelected[idCardSelected] === 'disable'){
-            pokemonSelected[idCardSelected] = 'enable';
-        }else{
-            pokemonSelected[idCardSelected] = 'disable';
-        }
-        */
-       console.log(idCardSelected);
-       console.log(allPokemons[idCardSelected - 1].active);
-        // Actualizar estado pokemon
         updateCurrentState(idCardSelected);
+        
+        if(allPokemons[idCardSelected-1].status == 'active'){
+            allPokemons[idCardSelected-1].status = 'inactive';
+        }else{
+            allPokemons[idCardSelected-1].status = 'active';
+        }
+        
+        // Actualizar estado pokemon
+        
+        saveData(allPokemons);
+        updateActive();
     });
 
     function updateCurrentState(id){
         let currentCard = document.getElementById(`${id}`);
-        if(currentCard.classList.contains ('disable')){
-            currentCard.classList.remove('disable');
+
+        if(allPokemons[id-1].status == 'active'){
+            currentCard.classList.remove('active');
+            currentCard.classList.add('inactive')
         }else{
-            currentCard.classList.add('disable')
-        } 
+            currentCard.classList.remove('inactive');
+            currentCard.classList.add('active')
+        }
+
+        saveData(allPokemons);
         updateActive();
     }
-    //Botones
+
+    // Escuchar Aplastado de Botones
 
     right.addEventListener('click', (event)=>{
         page++;
@@ -168,11 +191,22 @@ async function app(){
     }
     function updateActive(){
         let total = document.getElementById('total');
-        let numberOfSelected = pokemonSelected.filter(element=>element == 'enable');
-        // total.innerHTML = `${numberOfSelected.length}/${totalOfPokemons}`
 
-        localStorage.setItem('pokemonSelected', JSON.stringify(pokemonSelected))
-        localStorage.setItem('allpokemons', JSON.stringify(allPokemons))
+        let pokemonSelected = []
+
+        allPokemons.forEach(element => {
+            pokemonSelected.push(element.status);
+        });
+
+
+        let numberOfSelected = pokemonSelected.filter(element=>element == 'active');
+        total.innerHTML = `${numberOfSelected.length}/${totalOfPokemons}`
+
+        // localStorage.setItem('pokemonSelected', JSON.stringify(pokemonSelected))
+        localStorage.setItem('allPokemons', JSON.stringify(allPokemons))
         
+    }
+    function saveData(data){
+        localStorage.setItem('allPokemons', JSON.stringify(data))
     }
 }

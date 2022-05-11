@@ -1,5 +1,6 @@
+/*
 export class CardPokemon{
-    constructor(id, name, img, hp, attack, defense, speed, active){
+    constructor(id, name, img, hp, attack, defense, speed, status){
         this._id = id;
         this._name = name;
         this._img = img;
@@ -7,7 +8,7 @@ export class CardPokemon{
         this._attack = attack;
         this._defense = defense;
         this._speed = speed;
-        this._active = active
+        this._status = status
     }
     get id(){
         return this._id;
@@ -30,10 +31,24 @@ export class CardPokemon{
     get speed(){
         return this._speed;
     }
-    get active(){
-        return this._active;
+    get status(){
+        return this._status;
     }
-    set active(newState){
-        this._active = newState;
+    set status(newState){
+        this._status = newState;
+    }
+}
+*/
+
+export class CardPokemon{
+    constructor(id, name, img, hp, attack, defense, speed, status){
+        this.id = id;
+        this.name = name;
+        this.img = img;
+        this.hp = hp;
+        this.attack = attack;
+        this.defense = defense;
+        this.speed = speed;
+        this.status = status
     }
 }
