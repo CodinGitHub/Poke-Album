@@ -1,7 +1,7 @@
 import {CardPokemon} from './objects.js'
 
 // Configuración inicial
-let totalOfPokemons = 350;
+let totalOfPokemons = 300;
 let allPokemons = [];
 
 app();
@@ -103,6 +103,7 @@ async function app(){
         }
         
         for(let i = start-1; i<end-1; i++){
+            console.log(i);
             createFromArray(i);
         }
         
