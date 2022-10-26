@@ -1,5 +1,5 @@
 // Consultar un N número de pokemons
-let totalOfPokemons = 5;
+let totalOfPokemons = 450;
 let allPokemones = []
 
 // Hacer la consulta al API de pokemon
